@@ -1,0 +1,9 @@
+# Chapitre 10 — VaultConfiguration : les coffres a effet de levier avec strategie externe
+
+Au-dela du pret et de l'emprunt simples, Notional propose un cadre de « leveraged vaults » (`VaultConfiguration.sol`, 623 lignes) permettant a un compte d'emprunter aupres de Notional pour financer une strategie geree par un contrat de coffre externe (`IStrategyVault`, non inclus dans ce depot), typiquement pour des positions a effet de levier sur des strategies de rendement.
+
+Chaque configuration de coffre stocke un jeu de drapeaux binaires compacts (`uint16 flags`) dont plusieurs controlent l'authentification des methodes : `ONLY_VAULT_ENTRY`, `ONLY_VAULT_EXIT`, `ONLY_VAULT_ROLL` et `ONLY_VAULT_DELEVERAGE` forcent certains appels a ne provenir que du contrat de coffre lui-meme plutot que directement d'un utilisateur, tandis que `ALLOW_REENTRANCY` autorise explicitement un coffre a rappeler Notional pendant l'execution — une derogation ponctuelle a la protection anti-reentrance par defaut de toutes les methodes externes de coffre.
+
+Trois seuils de ratio de collateral sont ordonnes par une invariante verifiee a la configuration (`minCollateralRatioBPS < maxDeleverageCollateralRatioBPS < maxRequiredAccountCollateralRatioBPS`) : un compte est liquidable en dessous du minimum, un deleveragement partiel peut le ramener jusqu'au maximum de deleveragement (mais pas au-dela, pour laisser une marge), et le ratio maximum requis borne le montant qu'un nouveau compte peut emprunter au moment de l'entree dans le coffre. Le drapeau `ENABLE_FCASH_DISCOUNT` permet optionnellement d'actualiser l'fCash detenu par le coffre a sa valeur presente lors de la valorisation, ce qui autorise plus de levier mais expose le compte au risque de taux d'interet — desactive par defaut pour des coffres plus passifs.
+
+[Chapitre suivant : BatchAction, executer plusieurs operations en une transaction](11-batch-liquidation.md)
