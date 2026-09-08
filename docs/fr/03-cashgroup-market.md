@@ -1,0 +1,9 @@
+# Chapitre 3 — Cash Group et Market : les marches de pret a taux fixe par fCash
+
+Chaque devise geree par Notional possede un « cash group » (`CashGroup.sol`) qui regroupe la configuration d'un ensemble de marches a echeances differentes (3 mois, 6 mois, 1 an, 2 ans...). Chaque marche (`Market.sol`) est une courbe de liquidite qui echange de l'asset cash (du prime cash, chapitre 6) contre de l'fCash — un jeton represantant un montant fixe payable a une echeance donnee, analogue a une obligation zero-coupon.
+
+Le prix d'un marche est gouverne par trois grandeurs liees, documentees dans `contracts/internal/markets/_README.md` : le taux de change `exchangeRate = fCash / cash` calcule a partir de la proportion `proportion = fCash / (fCash + cash)` via la formule logarithmique `exchangeRate = rateScalar^-1 * ln(proportion / (1 - proportion)) + rateAnchor`, puis le taux implicite annualise `impliedRate = ln(exchangeRate) / timeToMaturity`. `InterestRateCurve.sol` (656 lignes) implemente le calcul exact de ces echanges lors d'une transaction (`calculatefCashTrade`), en tenant compte des frais preleves (`TOTAL_FEE`, partages avec une part reservee au protocole via `RESERVE_FEE_SHARE`).
+
+`addLiquidity` et `removeLiquidity` (dans `Market.sol`) permettent de fournir ou retirer de la liquidite proportionnellement au pool existant, en retournant des jetons de liquidite et une position fCash negative (pour un fournisseur de liquidite, qui est structurellement preteur net dans le marche). Fait notable : les marches ne reglent pas exactement a leur echeance mais tous les trimestres (chapitre 8), ce qui garantit qu'un marche annonce comme « 2 ans » reste toujours entre 2 ans et 1,75 an avant reglement effectif.
+
+[Chapitre suivant : PortfolioHandler et le portefeuille en tableau ou en bitmap](04-portfolio.md)
