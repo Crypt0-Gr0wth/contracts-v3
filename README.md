@@ -1,3 +1,7 @@
+## Parcours francais
+
+Ce depot contient un parcours pedagogique en francais dans docs/fr/ : lecture commentee de Notional V3, le protocole de pret a taux fixe fonde sur l fCash et le systeme de pret a taux variable prime cash, un mecanisme par chapitre, sans aucune installation ni execution du projet.
+
 # Notional Contracts V3
 
 Notional V3 is an upgrade to Notional V2 that enables variable rate lending on top of existing fixed rate lending functionality. Notional V3 also improves the Notional Leveraged Vault framework, allowing both variable and fixed rate leverage. The introduction of variable rate lending removes many impediments to fixed rate adoption, primarily around settlement. In Notional V3, fixed rates now settle to variable rates instead of having a hard, discrete cash settlement requirement. Variable rate markets also improve returns to the nToken liquidity providers. Variable rates also allow for temporarily illiquid fCash to be liquidated by forcing the account to borrow at a variable rate (effectively forcing an interest rate swap), greatly reducing the risk of illiquid fCash liquidations.
